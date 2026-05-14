@@ -56,6 +56,17 @@ PHASES: List[Tuple[str, List[str]]] = [
 ]
 _STATE_TO_PHASE = {state: i for i, (_, states) in enumerate(PHASES) for state in states}
 
+# Flat ordered list of every state in the AKR pipeline, used to map state name -> step index.
+_STATE_ORDER: List[str] = [s for _, states in PHASES for s in states]
+_STATE_INDEX = {name: i + 1 for i, name in enumerate(_STATE_ORDER)}
+TOTAL_PIPELINE_STEPS = len(_STATE_ORDER)
+
+
+def step_for_state(state_name: Optional[str]) -> Optional[int]:
+    if not state_name:
+        return None
+    return _STATE_INDEX.get(state_name)
+
 
 def phase_for_state(state_name: Optional[str]) -> Optional[dict]:
     if not state_name:
@@ -491,7 +502,7 @@ async def running(stateMachineArns: Optional[str] = None):
             run(get_history_for_running, ex["executionArn"]),
         )
         current = find_current_step(events)
-        step_index = count_states_entered(events)
+        step_index = step_for_state(current["name"] if current else None)
         pid, pgid = extract_project_id(desc.get("input"))
         sm = sm_map.get(arn, {})
         return {
@@ -505,7 +516,7 @@ async def running(stateMachineArns: Optional[str] = None):
             "startEpoch": ex["startDate"].timestamp(),
             "currentStep": current,
             "stepIndex": step_index,
-            "totalSteps": total_map.get(arn),
+            "totalSteps": total_map.get(arn) or TOTAL_PIPELINE_STEPS,
             "phase": phase_for_state(current["name"] if current else None),
             "projectId": pid,
             "processGroupId": pgid,
@@ -529,14 +540,15 @@ async def _enrich_terminal(arn: str, ex: Dict, sm_map: Dict, total_map: Dict,
         events_task = run(get_history_for_failed, ex["executionArn"])
         desc, events = await asyncio.gather(desc_task, events_task)
         failure = find_failed_step(events)
-        step_index = count_states_entered(events)
         failed_state = failure.get("stateName")
+        step_index = step_for_state(failed_state)
         map_iteration = failure.get("mapIteration")
         error_type = failure.get("errorType")
         error_message = failure.get("errorMessage")
     else:
         desc = await desc_task
-        step_index = None
+        # SUCCEEDED runs reached the last step.
+        step_index = TOTAL_PIPELINE_STEPS if ex["status"] == "SUCCEEDED" else None
         failed_state = None
         map_iteration = None
         error_type = None
@@ -561,7 +573,7 @@ async def _enrich_terminal(arn: str, ex: Dict, sm_map: Dict, total_map: Dict,
         "errorType": error_type,
         "errorMessage": error_message,
         "stepIndex": step_index,
-        "totalSteps": total_map.get(arn),
+        "totalSteps": total_map.get(arn) or TOTAL_PIPELINE_STEPS,
         "phase": phase_for_state(failed_state),
         "projectId": pid,
         "processGroupId": pgid,
