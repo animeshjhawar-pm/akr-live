@@ -32,6 +32,19 @@ async def run(fn, *args, **kwargs):
     return await loop.run_in_executor(_pool, lambda: fn(*args, **kwargs))
 
 
+@app.get("/api/health")
+async def health():
+    return {
+        "ok": True,
+        "hasAwsKey": bool(os.getenv("AWS_ACCESS_KEY_ID")),
+        "hasAwsSecret": bool(os.getenv("AWS_SECRET_ACCESS_KEY")),
+        "hasDbUrl": bool(os.getenv("DB_URL")),
+        "stateMachineName": os.getenv("STATE_MACHINE_NAME"),
+        "stateMachinePrefix": os.getenv("STATE_MACHINE_PREFIX"),
+        "region": os.getenv("AWS_REGION"),
+    }
+
+
 @app.get("/api/state-machines")
 async def state_machines():
     sms = await run(aws_client.list_state_machines)
