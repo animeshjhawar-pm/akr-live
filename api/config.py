@@ -1,7 +1,13 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+# Walk up from this file to find a .env (works for local dev where .env lives at project root).
+# In production (Vercel), env vars come from the platform and .env won't exist — that's fine.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+for _candidate in [os.path.join(_HERE, ".env"), os.path.join(_HERE, "..", ".env")]:
+    if os.path.exists(_candidate):
+        load_dotenv(_candidate)
+        break
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 AWS_ACCOUNT_ID = os.getenv("AWS_ACCOUNT_ID", "465512941999")
