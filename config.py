@@ -1,0 +1,17 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
+AWS_ACCOUNT_ID = os.getenv("AWS_ACCOUNT_ID", "465512941999")
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+DB_URL = os.getenv("DB_URL")
+STATE_MACHINE_PREFIX = os.getenv("STATE_MACHINE_PREFIX", "stormbreaker-")
+STATE_MACHINE_NAME = os.getenv("STATE_MACHINE_NAME", "").strip() or None
+
+MIN_REFRESH_SECONDS = 30
+STATE_MACHINE_LIST_TTL = 600
+RUNNING_HISTORY_TTL = 60
+FAILED_HISTORY_CACHE_SIZE = 4096
