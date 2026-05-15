@@ -19,7 +19,7 @@ const HOURS_OPTIONS = [
 
 export default function Controls(p: Props) {
   return (
-    <div className="flex flex-wrap items-end gap-4 bg-white p-4 rounded shadow-sm border border-slate-200">
+    <div className="flex flex-wrap items-end gap-3 sm:gap-4 bg-white p-3 sm:p-4 rounded shadow-sm border border-slate-200">
       <div>
         <label className="block text-xs text-slate-500 mb-1">Time window</label>
         <select
@@ -43,7 +43,7 @@ export default function Controls(p: Props) {
         {p.refreshing ? "Refreshing…" : "Refresh"}
       </button>
 
-      <div className="ml-auto text-sm text-slate-600 flex items-center gap-3">
+      <div className="w-full sm:w-auto sm:ml-auto text-xs sm:text-sm text-slate-600 flex flex-wrap items-center gap-2 sm:gap-3">
         <span>
           Last refreshed:{" "}
           <strong>

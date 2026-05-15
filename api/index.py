@@ -471,6 +471,29 @@ async def clear_cache():
     return {"ok": True}
 
 
+def _redrive_execution(arn: str) -> Dict:
+    res = _sfn().redrive_execution(executionArn=arn)
+    return {
+        "redriveDate": res["redriveDate"].isoformat() if res.get("redriveDate") else None,
+    }
+
+
+@app.post("/api/executions/redrive")
+async def redrive_execution(arn: str):
+    try:
+        res = await run(_redrive_execution, arn)
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+    # invalidate caches that touch this execution so the UI sees the new status on next refresh
+    _describe_terminal_cache.pop(arn, None)
+    _describe_running_cache.pop(arn, None)
+    _failed_history_cache.pop(arn, None)
+    _redrive_cache.pop(arn, None)
+    _list_running_cache.clear()
+    _list_terminal_cache.clear()
+    return {"ok": True, **res}
+
+
 def _parse_arns(state_machine_arns: Optional[str]) -> List[str]:
     if not state_machine_arns:
         return [sm["arn"] for sm in list_state_machines()]

@@ -3,13 +3,15 @@ import { formatIST, formatDuration, truncate } from "../util";
 import { SortableTable, Column } from "./SortableTable";
 import PhasePill from "./PhasePill";
 import RedriveHistory from "./RedriveHistory";
+import RedriveButton from "./RedriveButton";
 
 interface Props {
   rows: FailedExecution[];
   onPhaseClick?: () => void;
+  onRedriven: () => void;
 }
 
-export default function FailedTable({ rows, onPhaseClick }: Props) {
+export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
   const cols: Column<FailedExecution>[] = [
     {
       key: "project",
@@ -113,8 +115,8 @@ export default function FailedTable({ rows, onPhaseClick }: Props) {
       rowKey={(r) => r.executionArn}
       rowAccent="border-l-4 border-l-red-500"
       expanded={(r) => (
-        <div className="space-y-2 text-sm">
-          <div>
+        <div className="space-y-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <a
               href={r.consoleUrl}
               target="_blank"
@@ -123,8 +125,13 @@ export default function FailedTable({ rows, onPhaseClick }: Props) {
             >
               Open in AWS Console ↗
             </a>
-            <span className="text-slate-500 ml-3">Redrives: {r.redriveCount}</span>
-            <span className="text-slate-500 ml-3">Status: {r.status}</span>
+            <span className="text-slate-500">Redrives: {r.redriveCount}</span>
+            <span className="text-slate-500">Status: {r.status}</span>
+            <RedriveButton
+              executionArn={r.executionArn}
+              executionName={r.executionName}
+              onSuccess={onRedriven}
+            />
           </div>
           <RedriveHistory executionArn={r.executionArn} redriveCount={r.redriveCount} />
           {r.errorMessage && (

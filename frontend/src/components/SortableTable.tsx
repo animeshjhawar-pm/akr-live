@@ -34,8 +34,8 @@ export function SortableTable<T>(p: Props<T>) {
   });
 
   return (
-    <div className="overflow-auto bg-white border border-slate-200 rounded shadow-sm">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto bg-white border border-slate-200 rounded shadow-sm">
+      <table className="w-full text-xs sm:text-sm min-w-[640px]">
         <thead className="bg-slate-100 sticky top-0">
           <tr>
             {p.columns.map((c) => (

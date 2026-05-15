@@ -82,15 +82,15 @@ export default function App() {
   const smConsoleUrl = stateMachines[0]?.consoleUrl ?? null;
 
   return (
-    <div className="max-w-[1400px] mx-auto p-4 space-y-4">
-      <header className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src={LOGO_URL} alt="Gushwork" className="h-8 w-auto" />
-          <h1 className="text-xl font-semibold">AKR Dashboard</h1>
+    <div className="max-w-[1400px] mx-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
+      <header className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <img src={LOGO_URL} alt="Gushwork" className="h-6 sm:h-8 w-auto" />
+          <h1 className="text-lg sm:text-xl font-semibold">AKR Dashboard</h1>
         </div>
         <button
           onClick={() => setPhasesOpen(true)}
-          className="text-sm border border-slate-300 hover:bg-slate-100 px-3 py-1.5 rounded"
+          className="text-xs sm:text-sm border border-slate-300 hover:bg-slate-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded"
         >
           View phases
         </button>
@@ -120,7 +120,7 @@ export default function App() {
         uniqueFailedProjects={uniqueFailedProjects}
       />
 
-      <div className="flex gap-2 border-b border-slate-200">
+      <div className="flex gap-1 sm:gap-2 border-b border-slate-200 overflow-x-auto">
         <TabButton tab="running" current={tab} onClick={setTab} color="blue" count={running.length}>
           Running
         </TabButton>
@@ -142,7 +142,11 @@ export default function App() {
         <RunningTable rows={running} now={now} onPhaseClick={() => setPhasesOpen(true)} />
       )}
       {tab === "failed" && (
-        <FailedTable rows={failed} onPhaseClick={() => setPhasesOpen(true)} />
+        <FailedTable
+          rows={failed}
+          onPhaseClick={() => setPhasesOpen(true)}
+          onRedriven={fetchData}
+        />
       )}
       {tab === "succeeded" && <SucceededTable rows={succeeded} />}
     </div>

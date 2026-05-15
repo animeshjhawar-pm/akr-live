@@ -40,7 +40,7 @@ export default function PhasesDrawer({ open, onClose }: Props) {
         }`}
       />
       <aside
-        className={`fixed top-0 right-0 h-full w-96 bg-white shadow-xl z-50 transform transition-transform overflow-y-auto ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 max-w-[100vw] bg-white shadow-xl z-50 transform transition-transform overflow-y-auto ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
