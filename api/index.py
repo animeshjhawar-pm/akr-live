@@ -640,3 +640,25 @@ async def succeeded(hours: int = 168, stateMachineArns: Optional[str] = None):
     # rows show duration + redrives + project, not step counts. ~10x faster.
     rows = await _terminal(["SUCCEEDED"], hours, stateMachineArns, walk_history=False)
     return {"executions": rows, "fetchedAt": datetime.now(timezone.utc).isoformat()}
+
+
+# ---------- static frontend (Railway/single-process deploy) ----------
+
+from fastapi.responses import FileResponse  # noqa: E402
+from fastapi.staticfiles import StaticFiles  # noqa: E402
+
+_FRONTEND_DIST = os.path.normpath(os.path.join(_HERE, "..", "frontend", "dist"))
+if os.path.isdir(_FRONTEND_DIST):
+    app.mount("/assets", StaticFiles(directory=os.path.join(_FRONTEND_DIST, "assets")), name="assets")
+
+    @app.get("/")
+    def _index():
+        return FileResponse(os.path.join(_FRONTEND_DIST, "index.html"))
+
+    @app.get("/{path:path}")
+    def _spa_fallback(path: str):
+        # Serve the file if it exists in dist/, otherwise fall back to index.html for SPA routes.
+        candidate = os.path.join(_FRONTEND_DIST, path)
+        if os.path.isfile(candidate):
+            return FileResponse(candidate)
+        return FileResponse(os.path.join(_FRONTEND_DIST, "index.html"))
