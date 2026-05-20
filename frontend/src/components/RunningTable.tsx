@@ -3,14 +3,16 @@ import { formatIST, relativeTime, formatDuration } from "../util";
 import { SortableTable, Column } from "./SortableTable";
 import PhasePill from "./PhasePill";
 import RedriveHistory from "./RedriveHistory";
+import StopButton from "./StopButton";
 
 interface Props {
   rows: RunningExecution[];
   now: number;
   onPhaseClick?: () => void;
+  onStopped: () => void;
 }
 
-export default function RunningTable({ rows, now, onPhaseClick }: Props) {
+export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Props) {
   const cols: Column<RunningExecution>[] = [
     {
       key: "project",
@@ -96,6 +98,18 @@ export default function RunningTable({ rows, now, onPhaseClick }: Props) {
         </a>
       ),
     },
+    {
+      key: "actions",
+      label: "Actions",
+      render: (r) => (
+        <StopButton
+          executionArn={r.executionArn}
+          executionName={r.executionName}
+          onSuccess={onStopped}
+          compact
+        />
+      ),
+    },
   ];
 
   return (
@@ -107,8 +121,8 @@ export default function RunningTable({ rows, now, onPhaseClick }: Props) {
       rowKey={(r) => r.executionArn}
       rowAccent="border-l-4 border-l-blue-500"
       expanded={(r) => (
-        <div className="space-y-2 text-sm">
-          <div>
+        <div className="space-y-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <a
               href={r.consoleUrl}
               target="_blank"
@@ -117,7 +131,12 @@ export default function RunningTable({ rows, now, onPhaseClick }: Props) {
             >
               Open in AWS Console ↗
             </a>
-            <span className="text-slate-500 ml-3">Redrives: {r.redriveCount}</span>
+            <span className="text-slate-500">Redrives: {r.redriveCount}</span>
+            <StopButton
+              executionArn={r.executionArn}
+              executionName={r.executionName}
+              onSuccess={onStopped}
+            />
           </div>
           <RedriveHistory executionArn={r.executionArn} redriveCount={r.redriveCount} />
           <details>

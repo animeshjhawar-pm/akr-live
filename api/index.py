@@ -494,6 +494,32 @@ async def redrive_execution(arn: str):
     return {"ok": True, **res}
 
 
+def _stop_execution(arn: str, cause: Optional[str], error: Optional[str]) -> Dict:
+    kwargs = {"executionArn": arn}
+    if cause:
+        kwargs["cause"] = cause
+    if error:
+        kwargs["error"] = error
+    res = _sfn().stop_execution(**kwargs)
+    return {"stopDate": res["stopDate"].isoformat() if res.get("stopDate") else None}
+
+
+@app.post("/api/executions/stop")
+async def stop_execution(arn: str, cause: Optional[str] = "Stopped from AKR Dashboard",
+                         error: Optional[str] = "ManualStop"):
+    try:
+        res = await run(_stop_execution, arn, cause, error)
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+    _describe_terminal_cache.pop(arn, None)
+    _describe_running_cache.pop(arn, None)
+    _failed_history_cache.pop(arn, None)
+    _running_history_cache.pop(arn, None)
+    _list_running_cache.clear()
+    _list_terminal_cache.clear()
+    return {"ok": True, **res}
+
+
 def _parse_arns(state_machine_arns: Optional[str]) -> List[str]:
     if not state_machine_arns:
         return [sm["arn"] for sm in list_state_machines()]

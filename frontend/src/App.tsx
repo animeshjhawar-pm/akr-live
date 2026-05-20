@@ -82,30 +82,44 @@ export default function App() {
   const smConsoleUrl = stateMachines[0]?.consoleUrl ?? null;
 
   return (
-    <div className="max-w-[1400px] mx-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
-      <header className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 sm:gap-3">
-          <img src={LOGO_URL} alt="Gushwork" className="h-6 sm:h-8 w-auto" />
-          <h1 className="text-lg sm:text-xl font-semibold">AKR Dashboard</h1>
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-[1400px] mx-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
+        <div className="rounded-xl overflow-hidden shadow-sm">
+          <header className="flex flex-wrap items-center justify-between gap-2 bg-gradient-to-r from-indigo-600 via-violet-600 to-blue-600 px-4 sm:px-6 py-3 sm:py-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <img
+                src={LOGO_URL}
+                alt="Gushwork"
+                className="h-6 sm:h-8 w-auto bg-white/90 rounded p-0.5"
+              />
+              <div>
+                <h1 className="text-lg sm:text-xl font-semibold text-white leading-tight">
+                  AKR Dashboard
+                </h1>
+                <p className="text-[11px] sm:text-xs text-indigo-100">
+                  Automated Keyword Research · Step Functions monitor
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setPhasesOpen(true)}
+              className="text-xs sm:text-sm bg-white/15 hover:bg-white/25 text-white border border-white/30 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg backdrop-blur-sm transition-colors"
+            >
+              View phases
+            </button>
+          </header>
+
+          <Controls
+            hours={hours}
+            setHours={setHours}
+            onRefresh={fetchData}
+            lastRefreshed={lastRefreshed}
+            refreshing={refreshing}
+            stateMachineConsoleUrl={smConsoleUrl}
+          />
         </div>
-        <button
-          onClick={() => setPhasesOpen(true)}
-          className="text-xs sm:text-sm border border-slate-300 hover:bg-slate-100 px-2 sm:px-3 py-1 sm:py-1.5 rounded"
-        >
-          View phases
-        </button>
-      </header>
 
-      <PhasesDrawer open={phasesOpen} onClose={() => setPhasesOpen(false)} />
-
-      <Controls
-        hours={hours}
-        setHours={setHours}
-        onRefresh={fetchData}
-        lastRefreshed={lastRefreshed}
-        refreshing={refreshing}
-        stateMachineConsoleUrl={smConsoleUrl}
-      />
+        <PhasesDrawer open={phasesOpen} onClose={() => setPhasesOpen(false)} />
 
       {error && (
         <div className="bg-red-100 border border-red-300 text-red-800 p-2 rounded text-sm">
@@ -139,7 +153,12 @@ export default function App() {
       </div>
 
       {tab === "running" && (
-        <RunningTable rows={running} now={now} onPhaseClick={() => setPhasesOpen(true)} />
+        <RunningTable
+          rows={running}
+          now={now}
+          onPhaseClick={() => setPhasesOpen(true)}
+          onStopped={fetchData}
+        />
       )}
       {tab === "failed" && (
         <FailedTable
@@ -149,6 +168,7 @@ export default function App() {
         />
       )}
       {tab === "succeeded" && <SucceededTable rows={succeeded} />}
+      </div>
     </div>
   );
 }
