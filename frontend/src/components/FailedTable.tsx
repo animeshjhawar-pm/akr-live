@@ -104,6 +104,18 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
         </a>
       ),
     },
+    {
+      key: "actions",
+      label: "Actions",
+      render: (r) => (
+        <RedriveButton
+          executionArn={r.executionArn}
+          executionName={r.executionName}
+          onSuccess={onRedriven}
+          compact
+        />
+      ),
+    },
   ];
 
   return (

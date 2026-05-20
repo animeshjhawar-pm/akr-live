@@ -4,9 +4,10 @@ interface Props {
   executionArn: string;
   executionName: string;
   onSuccess: () => void;
+  compact?: boolean;
 }
 
-export default function RedriveButton({ executionArn, executionName, onSuccess }: Props) {
+export default function RedriveButton({ executionArn, executionName, onSuccess, compact }: Props) {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -43,8 +44,11 @@ export default function RedriveButton({ executionArn, executionName, onSuccess }
       <button
         onClick={handle}
         disabled={busy}
-        className="bg-amber-600 hover:bg-amber-700 disabled:opacity-60 text-white text-xs px-3 py-1 rounded"
+        className={`inline-flex items-center gap-1 bg-amber-600 hover:bg-amber-700 disabled:opacity-60 text-white rounded font-medium shadow-sm ${
+          compact ? "text-xs px-2.5 py-1" : "text-xs px-3 py-1.5"
+        }`}
       >
+        <span>↻</span>
         {busy ? "Redriving…" : "Redrive"}
       </button>
       {msg && <span className="text-xs text-green-700">{msg}</span>}
