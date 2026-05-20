@@ -14,6 +14,18 @@ interface Props {
 export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
   const cols: Column<FailedExecution>[] = [
     {
+      key: "actions",
+      label: "Action",
+      render: (r) => (
+        <RedriveButton
+          executionArn={r.executionArn}
+          executionName={r.executionName}
+          onSuccess={onRedriven}
+          compact
+        />
+      ),
+    },
+    {
       key: "project",
       label: "Project",
       sortVal: (r) => r.projectName ?? r.projectId ?? "",
@@ -102,18 +114,6 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
         >
           {r.executionName} ↗
         </a>
-      ),
-    },
-    {
-      key: "actions",
-      label: "Actions",
-      render: (r) => (
-        <RedriveButton
-          executionArn={r.executionArn}
-          executionName={r.executionName}
-          onSuccess={onRedriven}
-          compact
-        />
       ),
     },
   ];

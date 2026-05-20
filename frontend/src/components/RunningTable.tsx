@@ -15,6 +15,18 @@ interface Props {
 export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Props) {
   const cols: Column<RunningExecution>[] = [
     {
+      key: "actions",
+      label: "Action",
+      render: (r) => (
+        <StopButton
+          executionArn={r.executionArn}
+          executionName={r.executionName}
+          onSuccess={onStopped}
+          compact
+        />
+      ),
+    },
+    {
       key: "project",
       label: "Project",
       sortVal: (r) => r.projectName ?? r.projectId ?? "",
@@ -96,18 +108,6 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
         >
           {r.executionName} ↗
         </a>
-      ),
-    },
-    {
-      key: "actions",
-      label: "Actions",
-      render: (r) => (
-        <StopButton
-          executionArn={r.executionArn}
-          executionName={r.executionName}
-          onSuccess={onStopped}
-          compact
-        />
       ),
     },
   ];
