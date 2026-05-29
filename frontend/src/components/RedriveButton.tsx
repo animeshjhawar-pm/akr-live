@@ -46,16 +46,16 @@ export default function RedriveButton({ executionArn, executionName, onSuccess, 
           setConfirming(true);
         }}
         disabled={busy}
-        className={`inline-flex items-center gap-1 bg-amber-600 hover:bg-amber-700 disabled:opacity-60 text-white rounded font-medium shadow-sm ${
+        className={`inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 disabled:opacity-60 text-white rounded-lg font-medium shadow-[0_0_18px_-4px_rgba(245,158,11,0.7)] hover:shadow-[0_0_24px_-2px_rgba(245,158,11,0.9)] transition-all hover:scale-[1.04] ${
           compact ? "text-xs px-2.5 py-1" : "text-xs px-3 py-1.5"
         }`}
       >
-        <span>↻</span>
+        <span className={busy ? "animate-spin inline-block" : "inline-block"}>↻</span>
         {busy ? "Redriving…" : "Redrive"}
       </button>
-      {msg && <span className="text-xs text-green-700">{msg}</span>}
+      {msg && <span className="text-xs text-emerald-300">{msg}</span>}
       {error && (
-        <span className="text-xs text-red-700" title={error}>
+        <span className="text-xs text-rose-300" title={error}>
           {error.slice(0, 80)}
         </span>
       )}

@@ -46,16 +46,16 @@ export default function StopButton({ executionArn, executionName, onSuccess, com
           setConfirming(true);
         }}
         disabled={busy}
-        className={`inline-flex items-center gap-1 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white rounded font-medium shadow-sm ${
+        className={`inline-flex items-center gap-1.5 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 disabled:opacity-60 text-white rounded-lg font-medium shadow-[0_0_18px_-4px_rgba(244,63,94,0.7)] hover:shadow-[0_0_24px_-2px_rgba(244,63,94,0.9)] transition-all hover:scale-[1.04] ${
           compact ? "text-xs px-2.5 py-1" : "text-xs px-3 py-1.5"
         }`}
       >
         <span className="inline-block w-2.5 h-2.5 bg-white rounded-[2px]" />
         {busy ? "Stopping…" : "Stop"}
       </button>
-      {msg && <span className="text-xs text-green-700">{msg}</span>}
+      {msg && <span className="text-xs text-emerald-300">{msg}</span>}
       {error && (
-        <span className="text-xs text-red-700" title={error}>
+        <span className="text-xs text-rose-300" title={error}>
           {error.slice(0, 80)}
         </span>
       )}

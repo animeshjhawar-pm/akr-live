@@ -42,32 +42,40 @@ export function SortableTable<T>(p: Props<T>) {
   return (
     <>
       {/* ---- Desktop: table ---- */}
-      <div className="hidden sm:block overflow-x-auto bg-white border border-slate-200 rounded shadow-sm">
+      <div className="hidden sm:block overflow-x-auto glass rounded-2xl">
         <table className="w-full text-xs sm:text-sm min-w-[640px]">
-          <thead className="bg-slate-100 sticky top-0">
-            <tr>
-              {p.columns.map((c) => (
-                <th
-                  key={c.key}
-                  onClick={() => {
-                    if (sortKey === c.key) setDir(dir === "asc" ? "desc" : "asc");
-                    else {
-                      setSortKey(c.key);
-                      setDir("desc");
-                    }
-                  }}
-                  className="text-left px-3 py-2 font-medium text-slate-700 cursor-pointer select-none whitespace-nowrap"
-                >
-                  {c.label}
-                  {sortKey === c.key ? (dir === "asc" ? " ▲" : " ▼") : ""}
-                </th>
-              ))}
+          <thead className="sticky top-0 z-10">
+            <tr className="bg-gradient-to-r from-slate-900/80 via-slate-800/70 to-slate-900/80 backdrop-blur-md">
+              {p.columns.map((c) => {
+                const active = sortKey === c.key;
+                return (
+                  <th
+                    key={c.key}
+                    onClick={() => {
+                      if (sortKey === c.key) setDir(dir === "asc" ? "desc" : "asc");
+                      else {
+                        setSortKey(c.key);
+                        setDir("desc");
+                      }
+                    }}
+                    className={`text-left px-3 py-3 font-semibold uppercase tracking-wider text-[10px] cursor-pointer select-none whitespace-nowrap border-b border-white/10 transition-colors ${
+                      active ? "text-cyan-300" : "text-slate-400 hover:text-slate-200"
+                    }`}
+                  >
+                    {c.label}
+                    <span className="ml-1 text-[10px]">
+                      {active ? (dir === "asc" ? "▲" : "▼") : ""}
+                    </span>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody>
             {sorted.length === 0 && (
               <tr>
-                <td colSpan={p.columns.length} className="p-6 text-center text-slate-400">
+                <td colSpan={p.columns.length} className="p-8 text-center text-slate-500">
+                  <div className="text-4xl mb-2 opacity-30">◌</div>
                   No executions
                 </td>
               </tr>
@@ -78,19 +86,19 @@ export function SortableTable<T>(p: Props<T>) {
               return (
                 <Fragment key={k}>
                   <tr
-                    className={`border-t border-slate-100 hover:bg-slate-50 cursor-pointer ${
+                    className={`border-t border-white/5 hover:bg-white/[0.04] cursor-pointer transition-colors text-slate-200 ${
                       p.rowAccent ?? ""
-                    }`}
+                    } ${isOpen ? "bg-white/[0.04]" : ""}`}
                     onClick={() => toggle(k)}
                   >
                     {p.columns.map((c) => (
-                      <td key={c.key} className={`px-3 py-2 ${c.className ?? ""}`}>
+                      <td key={c.key} className={`px-3 py-3 ${c.className ?? ""}`}>
                         {c.render(row)}
                       </td>
                     ))}
                   </tr>
                   {isOpen && (
-                    <tr className="bg-slate-50 border-t border-slate-100">
+                    <tr className="bg-gradient-to-b from-cyan-500/[0.04] via-violet-500/[0.03] to-transparent border-t border-cyan-400/20">
                       <td colSpan={p.columns.length} className="p-4">
                         {p.expanded(row)}
                       </td>
@@ -106,7 +114,8 @@ export function SortableTable<T>(p: Props<T>) {
       {/* ---- Mobile: cards ---- */}
       <div className="sm:hidden space-y-2">
         {sorted.length === 0 && (
-          <div className="bg-white border border-slate-200 rounded shadow-sm p-6 text-center text-slate-400">
+          <div className="glass rounded-2xl p-6 text-center text-slate-500">
+            <div className="text-3xl mb-2 opacity-30">◌</div>
             No executions
           </div>
         )}
@@ -116,9 +125,7 @@ export function SortableTable<T>(p: Props<T>) {
           return (
             <div
               key={k}
-              className={`bg-white border border-slate-200 rounded-lg shadow-sm ${
-                p.rowAccent ?? ""
-              }`}
+              className={`glass rounded-2xl overflow-hidden text-slate-200 ${p.rowAccent ?? ""}`}
             >
               <div className="p-3" onClick={() => toggle(k)}>
                 <div className="flex items-start justify-between gap-2">
@@ -132,19 +139,19 @@ export function SortableTable<T>(p: Props<T>) {
                 <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5">
                   {bodyCols.map((c) => (
                     <div key={c.key} className="min-w-0">
-                      <div className="text-[10px] uppercase tracking-wide text-slate-400">
+                      <div className="text-[10px] uppercase tracking-wider text-slate-500">
                         {c.label}
                       </div>
-                      <div className="text-xs">{c.render(row)}</div>
+                      <div className="text-xs text-slate-200">{c.render(row)}</div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-2 text-[11px] text-indigo-600">
+                <div className="mt-2 text-[11px] text-cyan-300">
                   {isOpen ? "Tap to collapse ▲" : "Tap for details ▼"}
                 </div>
               </div>
               {isOpen && (
-                <div className="border-t border-slate-100 bg-slate-50 p-3">
+                <div className="border-t border-cyan-400/20 bg-gradient-to-b from-cyan-500/[0.04] to-transparent p-3">
                   {p.expanded(row)}
                 </div>
               )}

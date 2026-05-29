@@ -33,7 +33,7 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
       render: (r) => (
         <div>
           <div className="font-medium">{r.projectName ?? "(unknown)"}</div>
-          <div className="text-xs text-slate-500">{r.projectId ?? "—"}</div>
+          <div className="text-xs text-slate-400">{r.projectId ?? "—"}</div>
         </div>
       ),
     },
@@ -44,7 +44,7 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
       render: (r) => (
         <div>
           <div>{formatIST(r.startDate)}</div>
-          <div className="text-xs text-slate-500">{relativeTime(r.startEpoch, now)}</div>
+          <div className="text-xs text-slate-400">{relativeTime(r.startEpoch, now)}</div>
         </div>
       ),
     },
@@ -69,10 +69,10 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
           <div>
             {r.currentStep?.name ?? "—"}
             {r.currentStep?.transitioning && (
-              <span className="text-xs text-amber-700"> (transitioning)</span>
+              <span className="text-xs text-amber-300"> (transitioning)</span>
             )}
           </div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-400">
             Step {r.stepIndex ?? "?"} of {r.totalSteps ?? "?"}
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-blue-600 hover:underline font-mono text-xs"
+          className="text-cyan-300 hover:text-cyan-200 hover:underline font-mono text-xs"
         >
           {r.executionName} ↗
         </a>
@@ -127,11 +127,11 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
               href={r.consoleUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-cyan-300 hover:text-cyan-200 hover:underline"
             >
               Open in AWS Console ↗
             </a>
-            <span className="text-slate-500">Redrives: {r.redriveCount}</span>
+            <span className="text-slate-400">Redrives: {r.redriveCount}</span>
             <StopButton
               executionArn={r.executionArn}
               executionName={r.executionName}
@@ -140,8 +140,8 @@ export default function RunningTable({ rows, now, onPhaseClick, onStopped }: Pro
           </div>
           <RedriveHistory executionArn={r.executionArn} redriveCount={r.redriveCount} />
           <details>
-            <summary className="cursor-pointer text-slate-600">Input JSON</summary>
-            <pre className="bg-slate-100 p-2 rounded text-xs overflow-auto max-h-80 mt-2">
+            <summary className="cursor-pointer text-slate-300">Input JSON</summary>
+            <pre className="bg-slate-900/70 border border-white/10 text-slate-300 p-2 rounded-lg text-xs overflow-auto max-h-80 mt-2">
               {tryFormat(r.input)}
             </pre>
           </details>

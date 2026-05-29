@@ -82,30 +82,34 @@ export default function App() {
   const smConsoleUrl = stateMachines[0]?.consoleUrl ?? null;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen relative">
+      <div className="fx-bg" aria-hidden />
       <div className="max-w-[1400px] mx-auto p-2 sm:p-4 space-y-3 sm:space-y-4">
-        <div className="rounded-xl overflow-hidden shadow-sm">
-          <header className="flex flex-wrap items-center justify-between gap-2 bg-gradient-to-r from-indigo-600 via-violet-600 to-blue-600 px-4 sm:px-6 py-3 sm:py-4">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <img
-                src={LOGO_URL}
-                alt="Gushwork"
-                className="h-6 sm:h-8 w-auto bg-white/90 rounded p-0.5"
-              />
+        <div className="rounded-2xl overflow-hidden glass">
+          <header className="sweep relative flex flex-wrap items-center justify-between gap-2 px-4 sm:px-6 py-4 sm:py-5 bg-gradient-to-r from-indigo-600/40 via-violet-600/30 to-fuchsia-600/40 border-b border-white/10">
+            <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+              <div className="relative">
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-fuchsia-500 blur-md opacity-70" />
+                <img
+                  src={LOGO_URL}
+                  alt="Gushwork"
+                  className="relative h-8 sm:h-10 w-auto bg-white/95 rounded-xl p-1 ring-1 ring-white/40"
+                />
+              </div>
               <div>
-                <h1 className="text-lg sm:text-xl font-semibold text-white leading-tight">
+                <h1 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight holo-text">
                   AKR Dashboard
                 </h1>
-                <p className="text-[11px] sm:text-xs text-indigo-100">
+                <p className="text-[11px] sm:text-xs text-slate-300/80 tracking-wide">
                   Automated Keyword Research · Step Functions monitor
                 </p>
               </div>
             </div>
             <button
               onClick={() => setPhasesOpen(true)}
-              className="text-xs sm:text-sm bg-white/15 hover:bg-white/25 text-white border border-white/30 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg backdrop-blur-sm transition-colors"
+              className="relative z-10 text-xs sm:text-sm bg-white/10 hover:bg-white/20 text-white border border-white/25 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl backdrop-blur-md transition-all hover:scale-[1.03] hover:glow-violet"
             >
-              View phases
+              <span className="inline-block mr-1.5">◇</span>View phases
             </button>
           </header>
 
@@ -122,7 +126,7 @@ export default function App() {
         <PhasesDrawer open={phasesOpen} onClose={() => setPhasesOpen(false)} />
 
       {error && (
-        <div className="bg-red-100 border border-red-300 text-red-800 p-2 rounded text-sm">
+        <div className="glass rounded-xl border border-rose-500/40 text-rose-200 p-3 text-sm glow-pink">
           {error}
         </div>
       )}
@@ -134,18 +138,18 @@ export default function App() {
         uniqueFailedProjects={uniqueFailedProjects}
       />
 
-      <div className="flex gap-1 sm:gap-2 border-b border-slate-200 overflow-x-auto">
-        <TabButton tab="running" current={tab} onClick={setTab} color="blue" count={running.length}>
+      <div className="flex gap-1 sm:gap-2 overflow-x-auto p-1 rounded-2xl glass">
+        <TabButton tab="running" current={tab} onClick={setTab} color="cyan" count={running.length}>
           Running
         </TabButton>
-        <TabButton tab="failed" current={tab} onClick={setTab} color="red" count={failed.length}>
+        <TabButton tab="failed" current={tab} onClick={setTab} color="pink" count={failed.length}>
           Failed
         </TabButton>
         <TabButton
           tab="succeeded"
           current={tab}
           onClick={setTab}
-          color="green"
+          color="emerald"
           count={succeeded.length}
         >
           Succeeded
@@ -184,24 +188,33 @@ function TabButton({
   tab: Tab;
   current: Tab;
   onClick: (t: Tab) => void;
-  color: "blue" | "red" | "green";
+  color: "cyan" | "pink" | "emerald";
   count: number;
   children: React.ReactNode;
 }) {
   const active = tab === current;
-  const colorMap = {
-    blue: "border-blue-600 text-blue-700",
-    red: "border-red-600 text-red-700",
-    green: "border-green-600 text-green-700",
-  };
+  const activeBg = {
+    cyan: "bg-gradient-to-r from-cyan-500/30 to-blue-500/20 text-cyan-100 glow-cyan",
+    pink: "bg-gradient-to-r from-fuchsia-500/30 to-rose-500/20 text-pink-100 glow-pink",
+    emerald: "bg-gradient-to-r from-emerald-500/30 to-teal-500/20 text-emerald-100 glow-emerald",
+  }[color];
   return (
     <button
       onClick={() => onClick(tab)}
-      className={`px-4 py-2 text-sm border-b-2 -mb-px ${
-        active ? `${colorMap[color]} font-medium` : "border-transparent text-slate-600"
+      className={`relative px-4 sm:px-5 py-2 text-sm font-medium rounded-xl transition-all whitespace-nowrap ${
+        active
+          ? `${activeBg} border border-white/15`
+          : "text-slate-400 hover:text-slate-100 hover:bg-white/5 border border-transparent"
       }`}
     >
-      {children} ({count})
+      {children}
+      <span
+        className={`ml-2 inline-flex items-center justify-center min-w-[1.5rem] px-1.5 py-0.5 rounded-md text-[10px] font-bold ${
+          active ? "bg-white/15 text-white" : "bg-white/5 text-slate-300"
+        }`}
+      >
+        {count}
+      </span>
     </button>
   );
 }

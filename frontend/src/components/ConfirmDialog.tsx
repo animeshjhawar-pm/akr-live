@@ -25,37 +25,39 @@ export default function ConfirmDialog({
 
   const confirmCls =
     tone === "danger"
-      ? "bg-red-600 hover:bg-red-700"
-      : "bg-amber-600 hover:bg-amber-700";
+      ? "bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 shadow-[0_0_24px_-4px_rgba(244,63,94,0.7)]"
+      : "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 shadow-[0_0_24px_-4px_rgba(245,158,11,0.7)]";
+
+  const glow = tone === "danger" ? "shadow-[0_0_80px_-10px_rgba(244,63,94,0.5)]" : "shadow-[0_0_80px_-10px_rgba(245,158,11,0.5)]";
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/40"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={(e) => {
         e.stopPropagation();
         if (!busy) onCancel();
       }}
     >
       <div
-        className="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden"
+        className={`glass-strong rounded-2xl w-full max-w-sm overflow-hidden text-slate-200 ${glow}`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-5">
-          <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-          <p className="mt-2 text-sm text-slate-600 whitespace-pre-line">{message}</p>
+          <h3 className="text-base font-semibold text-white">{title}</h3>
+          <p className="mt-2 text-sm text-slate-300 whitespace-pre-line">{message}</p>
         </div>
-        <div className="flex justify-end gap-2 px-5 py-3 bg-slate-50 border-t border-slate-100">
+        <div className="flex justify-end gap-2 px-5 py-3 bg-white/[0.03] border-t border-white/10">
           <button
             onClick={onCancel}
             disabled={busy}
-            className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-60"
+            className="px-3 py-1.5 text-sm rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-slate-200 disabled:opacity-60 transition"
           >
             {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             disabled={busy}
-            className={`px-3 py-1.5 text-sm rounded-lg text-white shadow-sm disabled:opacity-60 ${confirmCls}`}
+            className={`px-3 py-1.5 text-sm rounded-lg text-white disabled:opacity-60 transition hover:scale-[1.03] ${confirmCls}`}
           >
             {busy ? "Working…" : confirmLabel}
           </button>

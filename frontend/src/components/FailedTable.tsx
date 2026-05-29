@@ -32,7 +32,7 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
       render: (r) => (
         <div>
           <div className="font-medium">{r.projectName ?? "(unknown)"}</div>
-          <div className="text-xs text-slate-500">{r.projectId ?? "—"}</div>
+          <div className="text-xs text-slate-400">{r.projectId ?? "—"}</div>
         </div>
       ),
     },
@@ -64,10 +64,10 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
           <div>
             {r.failedStep ?? "—"}
             {r.mapIteration != null && (
-              <span className="text-xs text-slate-500"> (iter {r.mapIteration})</span>
+              <span className="text-xs text-slate-400"> (iter {r.mapIteration})</span>
             )}
           </div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-400">
             Step {r.stepIndex ?? "?"} of {r.totalSteps ?? "?"}
           </div>
         </div>
@@ -79,8 +79,8 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
       sortVal: (r) => r.errorType ?? "",
       render: (r) => (
         <div title={r.errorMessage ?? ""}>
-          <div className="font-medium text-red-700">{r.errorType ?? r.status}</div>
-          <div className="text-xs text-slate-600">{truncate(r.errorMessage, 200)}</div>
+          <div className="font-medium text-rose-300">{r.errorType ?? r.status}</div>
+          <div className="text-xs text-slate-300">{truncate(r.errorMessage, 200)}</div>
         </div>
       ),
     },
@@ -110,7 +110,7 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-blue-600 hover:underline font-mono text-xs"
+          className="text-cyan-300 hover:text-cyan-200 hover:underline font-mono text-xs"
         >
           {r.executionName} ↗
         </a>
@@ -133,12 +133,12 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
               href={r.consoleUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-cyan-300 hover:text-cyan-200 hover:underline"
             >
               Open in AWS Console ↗
             </a>
-            <span className="text-slate-500">Redrives: {r.redriveCount}</span>
-            <span className="text-slate-500">Status: {r.status}</span>
+            <span className="text-slate-400">Redrives: {r.redriveCount}</span>
+            <span className="text-slate-400">Status: {r.status}</span>
             <RedriveButton
               executionArn={r.executionArn}
               executionName={r.executionName}
@@ -148,15 +148,15 @@ export default function FailedTable({ rows, onPhaseClick, onRedriven }: Props) {
           <RedriveHistory executionArn={r.executionArn} redriveCount={r.redriveCount} />
           {r.errorMessage && (
             <div>
-              <div className="text-xs uppercase text-slate-500 mb-1">Error message</div>
+              <div className="text-xs uppercase text-slate-400 mb-1">Error message</div>
               <pre className="bg-red-50 border border-red-200 p-2 rounded text-xs overflow-auto max-h-80 whitespace-pre-wrap">
                 {r.errorMessage}
               </pre>
             </div>
           )}
           <details>
-            <summary className="cursor-pointer text-slate-600">Input JSON</summary>
-            <pre className="bg-slate-100 p-2 rounded text-xs overflow-auto max-h-80 mt-2">
+            <summary className="cursor-pointer text-slate-300">Input JSON</summary>
+            <pre className="bg-slate-900/70 border border-white/10 text-slate-300 p-2 rounded-lg text-xs overflow-auto max-h-80 mt-2">
               {tryFormat(r.input)}
             </pre>
           </details>

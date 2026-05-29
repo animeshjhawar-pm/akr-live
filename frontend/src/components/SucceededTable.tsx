@@ -16,7 +16,7 @@ export default function SucceededTable({ rows }: Props) {
       render: (r) => (
         <div>
           <div className="font-medium">{r.projectName ?? "(unknown)"}</div>
-          <div className="text-xs text-slate-500">{r.projectId ?? "—"}</div>
+          <div className="text-xs text-slate-400">{r.projectId ?? "—"}</div>
         </div>
       ),
     },
@@ -75,7 +75,7 @@ export default function SucceededTable({ rows }: Props) {
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-blue-600 hover:underline font-mono text-xs"
+          className="text-cyan-300 hover:text-cyan-200 hover:underline font-mono text-xs"
         >
           {r.executionName} ↗
         </a>
@@ -98,16 +98,16 @@ export default function SucceededTable({ rows }: Props) {
               href={r.consoleUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-cyan-300 hover:text-cyan-200 hover:underline"
             >
               Open in AWS Console ↗
             </a>
-            <span className="text-slate-500 ml-3">Redrives: {r.redriveCount}</span>
+            <span className="text-slate-400 ml-3">Redrives: {r.redriveCount}</span>
           </div>
           <RedriveHistory executionArn={r.executionArn} redriveCount={r.redriveCount} />
           <details>
-            <summary className="cursor-pointer text-slate-600">Input JSON</summary>
-            <pre className="bg-slate-100 p-2 rounded text-xs overflow-auto max-h-80 mt-2">
+            <summary className="cursor-pointer text-slate-300">Input JSON</summary>
+            <pre className="bg-slate-900/70 border border-white/10 text-slate-300 p-2 rounded-lg text-xs overflow-auto max-h-80 mt-2">
               {tryFormat(r.input)}
             </pre>
           </details>

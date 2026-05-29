@@ -40,19 +40,19 @@ export default function RedriveHistory({ executionArn, redriveCount }: Props) {
 
   return (
     <div>
-      <div className="text-xs uppercase text-slate-500 mb-1">
+      <div className="text-[10px] uppercase tracking-[0.15em] text-cyan-300/80 mb-1.5 font-semibold">
         Redrive history ({redriveCount})
       </div>
-      {loading && <div className="text-xs text-slate-500">Loading…</div>}
-      {error && <div className="text-xs text-red-600">{error}</div>}
+      {loading && <div className="text-xs text-slate-400">Loading…</div>}
+      {error && <div className="text-xs text-rose-300">{error}</div>}
       {events && events.length === 0 && (
-        <div className="text-xs text-slate-500">No redrive events found in history.</div>
+        <div className="text-xs text-slate-400">No redrive events found in history.</div>
       )}
       {events && events.length > 0 && (
-        <ol className="text-xs space-y-1">
+        <ol className="text-xs space-y-1 text-slate-300">
           {events.map((e, i) => (
             <li key={i} className="font-mono">
-              <span className="inline-block w-10 text-slate-500">#{e.redriveCount ?? i + 1}</span>
+              <span className="inline-block w-10 text-cyan-300/70">#{e.redriveCount ?? i + 1}</span>
               <span>{e.timestamp ? formatIST(e.timestamp) : "—"}</span>
             </li>
           ))}
