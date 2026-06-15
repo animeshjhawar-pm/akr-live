@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+
 interface Props {
   open: boolean;
   title: string;
@@ -21,6 +24,21 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }: Props) {
+  // Lock body scroll while open and dismiss on Escape.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !busy) onCancel();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open, busy, onCancel]);
+
   if (!open) return null;
 
   const confirmCls =
@@ -30,7 +48,7 @@ export default function ConfirmDialog({
 
   const glow = tone === "danger" ? "shadow-[0_0_80px_-10px_rgba(244,63,94,0.5)]" : "shadow-[0_0_80px_-10px_rgba(245,158,11,0.5)]";
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       onClick={(e) => {
@@ -63,6 +81,7 @@ export default function ConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
