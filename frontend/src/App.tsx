@@ -74,9 +74,26 @@ export default function App() {
     fetchData();
   }, [fetchData]);
 
+  // Dedupe failed executions by process_group_id — keep the most recent failure per group.
+  // Rows without a process_group_id pass through as-is (no way to group them).
+  const dedupedFailed = useMemo(() => {
+    const latestByPg = new Map<string, FailedExecution>();
+    const ungrouped: FailedExecution[] = [];
+    for (const f of failed) {
+      const pg = f.processGroupId;
+      if (!pg) {
+        ungrouped.push(f);
+        continue;
+      }
+      const existing = latestByPg.get(pg);
+      if (!existing || f.startEpoch > existing.startEpoch) latestByPg.set(pg, f);
+    }
+    return [...latestByPg.values(), ...ungrouped];
+  }, [failed]);
+
   const uniqueFailedProjects = useMemo(
-    () => new Set(failed.map((f) => f.projectId).filter(Boolean)).size,
-    [failed]
+    () => new Set(dedupedFailed.map((f) => f.projectId).filter(Boolean)).size,
+    [dedupedFailed]
   );
 
   const smConsoleUrl = stateMachines[0]?.consoleUrl ?? null;
@@ -133,7 +150,7 @@ export default function App() {
 
       <StatCards
         running={running.length}
-        failed={failed.length}
+        failed={dedupedFailed.length}
         succeeded={succeeded.length}
         uniqueFailedProjects={uniqueFailedProjects}
       />
@@ -142,7 +159,7 @@ export default function App() {
         <TabButton tab="running" current={tab} onClick={setTab} color="cyan" count={running.length}>
           Running
         </TabButton>
-        <TabButton tab="failed" current={tab} onClick={setTab} color="pink" count={failed.length}>
+        <TabButton tab="failed" current={tab} onClick={setTab} color="pink" count={dedupedFailed.length}>
           Failed
         </TabButton>
         <TabButton
@@ -166,7 +183,7 @@ export default function App() {
       )}
       {tab === "failed" && (
         <FailedTable
-          rows={failed}
+          rows={dedupedFailed}
           onPhaseClick={() => setPhasesOpen(true)}
           onRedriven={fetchData}
         />
